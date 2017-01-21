@@ -1,0 +1,29 @@
+1. Lab01-01.exe: Yes, matches virus signatures on 29/55 antivirus websites
+   Lab01-02.exe: Yes, matches virus signatures on 35/55 antivirus websites
+   Lab01-03.exe: Yes, matches virus signatures on 49/55 antivirus websites
+   Lab01-04.exe: Yes, matches virus signatures on 47/55 antivirus websites
+
+2. Lab01-01.exe: Compiled on 12/19/10 at 4:16
+   Lab01-02.exe: Compiled on 1/19/11 at 4:10
+   Lab01-03.exe: Compiled on N/A
+   Lab01-04.exe: Compiled on 8/30/19 -- In the future
+
+3. Lab		Name	Virtual Size	Raw Data Size	
+   Lab01-01.exe .text	0970		1000		 
+   		.rdata	02B2		1000		Prediction: Not Packed
+		.data	00FC		1000
+   
+   Lab01-02.exe UPX0  	4000		0400
+		UPX1	1000		0600		Prediction: Packed
+		UPX2	1000            0200		
+
+   Lab01-03.exe ____	3000		0000
+		____	1000		028C		Prediction: Packed
+		____	1000		0200	
+
+   Lab01-04.exe .text	0720		1000
+		.rdata	03D2		1000
+		.data	014C		1000		Prediction: Not Packed
+		.rsrc	4060		5000
+
+4. 
