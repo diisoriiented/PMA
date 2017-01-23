@@ -242,4 +242,10 @@ OOPS - I was only suppsoed to look at Lab01-01.exe and Lab01-01.dll!!!!
 				 suspended by the Sleep function call.
 
 8. (Lab01-04.exe only)
-   
+   The resource was identified as binary by ResourceHacker. Since the line "!This 
+   program cannot be run in DOS" we can identify this resource actually as another 
+   executable file. To view the file, Action -> Save resource as binary, and then
+   open the binary file in dependecy walker to view the imports. Now we see 
+   "URLDownloadFile" which explains the URL in the resource. 
+
+   REMEMBER TO USE STRINGS!   
