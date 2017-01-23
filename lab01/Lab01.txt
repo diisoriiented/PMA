@@ -89,50 +89,59 @@
 
    Lab01-02.exe:
 
-   Kernel32.dll			Advapi32.dll		WININET.dll
-   _____________________________________________________________________________
-
-   LoadLibrary			CreateService		InternetOpen	
-   GetProcAddress
-   VirtualProtect
-   VirtualAlloc
-   VirtualFree
+   Kernel32.dll			Advapi32.dll			WININET.dll
+-------------------------------------------------------------------------------------
+   SystemTimeToFileTime		CreateService			InternetOpenUrl
+   GetModuleFileName		OpenSCManager			InternetOpen
+   CreateWaitableTimer		StartServiceCtrlDispatcher	
    ExitProcess
-   
-   Libraries of Note:
- 
-   LoadLibrary    - Loads a DLL into a process that wasn't originally loaded into the
- 		    Program at runtime
-   GetProcAddress - Retrieves the address of a function in another DLL not loaded into
-		    the program. 
-   VirtualProtect - Changes the protection on a region of memory. Malware may use this
-  		    to change a read-only section of memory to an executable
-   VirtualAlloc   - Memory allocation that can allocate memory in a remote process
-   InternetOpen   - Initializes high-level internet access functions
+   OpenMutex
+   SetWaitableTimer
+   WaitForSingleObject
+   CreateMutex
+   CreateThread
 
-   Guess: According to sources, recursive imports are normal, as other dll files might 
-	  need to import other dll functions. However, from the top level imports it 
-	  is hard to say what this malware does (because it is packed probably). We
-	  can see that this piece of malware creates a service, which will most likely
-	  run in the background of the victim's computer. Secondly, we can see that
-	  it is importing VirtualProtect, which changes the protection of a piece of
-	  memory. This could be deadly as it could change permissions on a read-only
-	  file or executable. Finally, we see that it imports the InternetOpen 
-	  functions, which could be used for internet access. Overall, it is pretty
-	  tough to see what this is doing, but we know that it most likely involves
-	  creating a service, the internet, and changing permissions of files.
+   Libraries to note:
 
+   GetModuleFilename - Returns the filename of a module that is loaded in the current
+		       process.
+   OpenMutex
+   WaitForSingleObject
+   CreateMutex
+   CreateThread 
+   OpenSCManager  - Opens a handle to the service contorl manager. Any program that
+ 		    installs, modifies, or controls a service must call this fn
+	  	    before any other service manipulation
+   StartServiceCtrlDispatcher - Used by a service to connect to the main thread of the
+				process to the service control manager. Any process that
+				runs as a service must call this function within 30
+				seconds of startup. Locating this function in malware
+				tells you that the function should run as a service.
+   InternetOpen
+   InternetOpenURL 	      - Opens a specific URL using FTP, HTTP, or HTTPS.
+
+   Guess: This piece of malware starts a service that downloads things from the internet
+	  (Downloader?)
 *************************************************************************************
 
    Lab01-03.exe
 
+   Oleaut32.dll		Ole32.dll
+-------------------------------------------------------------------------------------
+   SysAllocString	CoCreateInstance
+   SysFreeString	OleInitialize
+   VariantInit		OleUnititalize
+
    Libraries of note:
 
-   LoadLibrary
-   GetProcAddress
+   SysAllocString - Allocates a new string and copies the passed string into it
+   SysFreeString  - Deallocates a string allocated by ^
+   VariantInit    - Initializes a variant
+   CoCreateInstance - Creates a single uninitalized object with a specified CLSID
+   OleInitialize  - Initalized the COM library
+   
 
-   Guess: Nothing. The malware is packed and give little to no indication of what is 
-          going on here.
+   Guess: This piece of malware creates COM objects and allocates strings (?)
 
 *************************************************************************************
 
@@ -197,13 +206,29 @@ OOPS - I was only suppsoed to look at Lab01-01.exe and Lab01-01.dll!!!!
    Lab01-01.dll: This file appears to use Mutex's to suspend execution of files. Since
 		 mutex names are generally constant, the name of the mutex could be
 		 searched for which would indicate an infected host.
-   
+   Lab01-02.exe: If the mutuxes in this piece of malware are constant, the mutex name 
+		 can be searched for to identify an infected host.
+   Lab01-03.exe: Assuming that the objects created uinsg VariantInit are using constant
+		 names, infected hosts could pontentially be indentified by this.
+   Lab01-04.exe: This piece of malware has a few host-based signatures. First, we can
+		 see that files are being created. This filename might be constant,
+		 indicating and infection. Also, this program has a WinExe function, 
+		 that presumably could execute the same program. An uncommon program
+		 being executed could indicate an infection. This program also launches
+	  	 threads and get process addresses. If these are repeated and constant,
+		 these can yet again be host based identifiers. This shouldn't have
+		 any network identifiers since it doesn't access the web.
+
 6. Lab01-01.exe  None - no networking functionality.
    Lab01-01.dll  Upon inspection, it can be seen that the malware is using socket fns
 		 to connect to a port at some internet address. This is clearly a 
 		 network based indicator, and given the likelyhood of this inet addr and
 		 port being constant values in the malware, this can be searched for
 		 to identify infected hosts.
+   Lab01-02.exe  Since this piece of malware connects to the internet, and the hostname
+		 of the connections is probably constant. Hosts connecting to a specific
+		 URL can most likely be identified as infected.
+
 
 7. Lab01-01.exe - Guess Purpose: My guess is that this malware modifies the contents of
 				 specific files without the users knowledge. Why? That
@@ -215,3 +240,6 @@ OOPS - I was only suppsoed to look at Lab01-01.exe and Lab01-01.dll!!!!
 				 steal information. Networking libraries are imported
 				 and the computer being used has it's processes 
 				 suspended by the Sleep function call.
+
+8. (Lab01-04.exe only)
+   
